@@ -36,26 +36,26 @@ var flags = {
 };
 var typeflags = {
 	NTLM_TYPE1_FLAGS : 	  flags.NTLM_NegotiateUnicode
-						+ flags.NTLM_NegotiateOEM
-						+ flags.NTLM_RequestTarget
-						+ flags.NTLM_NegotiateNTLM
-						+ flags.NTLM_NegotiateOemDomainSupplied
-						+ flags.NTLM_NegotiateOemWorkstationSupplied
-						+ flags.NTLM_NegotiateAlwaysSign
-						+ flags.NTLM_NegotiateExtendedSecurity
-						+ flags.NTLM_NegotiateVersion
-						+ flags.NTLM_Negotiate128
-						+ flags.NTLM_Negotiate56,
+		+ flags.NTLM_NegotiateOEM
+		+ flags.NTLM_RequestTarget
+		+ flags.NTLM_NegotiateNTLM
+		+ flags.NTLM_NegotiateOemDomainSupplied
+		+ flags.NTLM_NegotiateOemWorkstationSupplied
+		+ flags.NTLM_NegotiateAlwaysSign
+		+ flags.NTLM_NegotiateExtendedSecurity
+		+ flags.NTLM_NegotiateVersion
+		+ flags.NTLM_Negotiate128
+		+ flags.NTLM_Negotiate56,
 
 	NTLM_TYPE2_FLAGS :    flags.NTLM_NegotiateUnicode
-						+ flags.NTLM_RequestTarget
-						+ flags.NTLM_NegotiateNTLM
-						+ flags.NTLM_NegotiateAlwaysSign
-						+ flags.NTLM_NegotiateExtendedSecurity
-						+ flags.NTLM_NegotiateTargetInfo
-						+ flags.NTLM_NegotiateVersion
-						+ flags.NTLM_Negotiate128
-						+ flags.NTLM_Negotiate56
+		+ flags.NTLM_RequestTarget
+		+ flags.NTLM_NegotiateNTLM
+		+ flags.NTLM_NegotiateAlwaysSign
+		+ flags.NTLM_NegotiateExtendedSecurity
+		+ flags.NTLM_NegotiateTargetInfo
+		+ flags.NTLM_NegotiateVersion
+		+ flags.NTLM_Negotiate128
+		+ flags.NTLM_Negotiate56
 };
 
 function createType1Message(options){

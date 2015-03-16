@@ -1,47 +1,16 @@
-# httpntlm
+# node-ntlm
 
-__httpntlm__ is a Node.js library to do HTTP NTLM authentication
+**node-ntlm** is a Node.js library to do NTLM authentication
 
 It's a port from the Python libary [python-ntml](https://code.google.com/p/python-ntlm/)
 
 ## Install
 
-You can install __httpntlm__ using the Node Package Manager (npm):
+You can install node-ntlm using the Node Package Manager (npm):
 
-    npm install httpntlm
+    npm install ntlm
 
 ## How to use
-
-```js
-var httpntlm = require('httpntlm');
-
-httpntlm.get({
-    url: "https://someurl.com",
-    username: 'm$',
-    password: 'stinks',
-    workstation: 'choose.something',
-    domain: ''
-}, function (err, res){
-    if(err) return err;
-
-    console.log(res.headers);
-    console.log(res.body);
-});
-```
-
-It supports __http__ and __https__.
-
-## Options
-
-- `url:`      _{String}_   URL to connect. (Required)
-- `username:` _{String}_   Username. (Required)
-- `password:` _{String}_   Password. (Required)
-- `workstation:` _{String}_ Name of workstation or `''`.
-- `domain:`   _{String}_   Name of domain or `''`.
-
-You can also pass along all other options of [httpreq](https://github.com/SamDecrock/node-httpreq), including custom headers, cookies, body data, ... and use POST, PUT or DELETE instead of GET.
-
-## Advanced
 
 If you want to use the NTLM-functions yourself, you can access the ntlm-library like this (https example):
 
@@ -61,41 +30,51 @@ var options = {
 };
 
 async.waterfall([
-    function (callback){
-        var type1msg = ntlm.createType1Message(options);
+  function (callback){
+    var type1msg = ntlm.createType1Message(options);
 
-        httpreq.get(options.url, {
-            headers:{
-                'Connection' : 'keep-alive',
-                'Authorization': type1msg
-            },
-            agent: keepaliveAgent
-        }, callback);
-    },
+    httpreq.get(options.url, {
+      headers:{
+        'Connection' : 'keep-alive',
+        'Authorization': type1msg
+      },
+      agent: keepaliveAgent
+    }, callback);
+  },
 
-    function (res, callback){
-        if(!res.headers['www-authenticate'])
-            return callback(new Error('www-authenticate not found on response of second request'));
+  function (res, callback){
+    if(!res.headers['www-authenticate'])
+      return callback(new Error('www-authenticate not found on response of second request'));
 
-        var type2msg = ntlm.parseType2Message(res.headers['www-authenticate']);
-        var type3msg = ntlm.createType3Message(type2msg, options);
+    var type2msg = ntlm.parseType2Message(res.headers['www-authenticate']);
+    var type3msg = ntlm.createType3Message(type2msg, options);
 
-        httpreq.get(options.url, {
-            headers:{
-                'Connection' : 'Close',
-                'Authorization': type3msg
-            },
-            allowRedirects: false,
-            agent: keepaliveAgent
-        }, callback);
-    }
+    httpreq.get(options.url, {
+      headers:{
+        'Connection' : 'Close',
+        'Authorization': type3msg
+      },
+      allowRedirects: false,
+      agent: keepaliveAgent
+    }, callback);
+  }
 ], function (err, res) {
-    if(err) return console.log(err);
+  if(err) return console.log(err);
 
-    console.log(res.headers);
-    console.log(res.body);
+  console.log(res.headers);
+  console.log(res.body);
 });
 ```
+
+## Options
+
+- `hostname:`      _{String}_   hostname to connect. (Required)
+- `username:` _{String}_   Username. (Required)
+- `password:` _{String}_   Password. (Required)
+- `workstation:` _{String}_ Name of workstation or `''`.
+- `domain:`   _{String}_   Name of domain or `''`.
+
+You can also pass along all other options of [http](https://nodejs.org/api/http.html).
 
 ## More information
 
