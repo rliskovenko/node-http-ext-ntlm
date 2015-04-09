@@ -40,7 +40,6 @@ NtlmAuthFilter.prototype.setManagerScope = function(scope) {
     scope.count = 0;
 };
 
-var hash = require('object-hash');
 NtlmAuthFilter.prototype.filterResponse = function(res, next) {
   var resSocket = res.socket;
 
