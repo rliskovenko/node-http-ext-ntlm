@@ -19,6 +19,7 @@
     "type": "git",
     "url": "https://github.com/liuxiong332/node-http-ext-ntlm.git"
   },
+  "files": ["*.js"],
   "main": "./http-ntlm",
   "licenses": [
     {

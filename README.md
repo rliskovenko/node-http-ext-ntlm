@@ -1,80 +1,52 @@
 # node-ntlm
 
-**node-ntlm** is a Node.js library to do NTLM authentication
+**http-ext-ntlm** is a [http-ext](https://github.com/liuxiong332/node-http-ext) plugin to do NTLM authentication
 
 It's a port from the Python libary [python-ntml](https://code.google.com/p/python-ntlm/)
 
 ## Install
 
-You can install node-ntlm using the Node Package Manager (npm):
+You can install http-ext-ntlm using the Node Package Manager (npm):
 
-    npm install ntlm
+    npm install http-ext-ntlm
 
 ## How to use
 
-If you want to use the NTLM-functions yourself, you can access the ntlm-library like this (https example):
+this module is the plugin of **http-ext**, so you should use with http-ext.
 
 ```js
-var ntlm = require('httpntlm').ntlm;
-var async = require('async');
-var httpreq = require('httpreq');
-var HttpsAgent = require('agentkeepalive').HttpsAgent;
-var keepaliveAgent = new HttpsAgent();
+var request = require('http-ext');
+var https = require('https');
+var http = require('http');
+var NtlmAuthFilter = require('http-ext-ntlm');
 
-var options = {
-    url: "https://someurl.com",
-    username: 'm$',
-    password: 'stinks',
-    workstation: 'choose.something',
-    domain: ''
+// use http-ext-ntlm module to authorize
+request.globalFilterManager.use(NtlmAuthFilter);
+
+var keepAliveAgent = new http.Agent({keepAlive: true});
+var requestConfig = {
+  ntlmAuth: {  
+    username: <username>,
+    password: <password>,
+    domain: <domain>,
+  },
+  agent: keepAliveAgent
 };
 
-async.waterfall([
-  function (callback){
-    var type1msg = ntlm.createType1Message(options);
-
-    httpreq.get(options.url, {
-      headers:{
-        'Connection' : 'keep-alive',
-        'Authorization': type1msg
-      },
-      agent: keepaliveAgent
-    }, callback);
-  },
-
-  function (res, callback){
-    if(!res.headers['www-authenticate'])
-      return callback(new Error('www-authenticate not found on response of second request'));
-
-    var type2msg = ntlm.parseType2Message(res.headers['www-authenticate']);
-    var type3msg = ntlm.createType3Message(type2msg, options);
-
-    httpreq.get(options.url, {
-      headers:{
-        'Connection' : 'Close',
-        'Authorization': type3msg
-      },
-      allowRedirects: false,
-      agent: keepaliveAgent
-    }, callback);
-  }
-], function (err, res) {
-  if(err) return console.log(err);
-
-  console.log(res.headers);
-  console.log(res.body);
+request.get(url, requestConfig, function(err, result) {
+  if(err) throw err;
+  console.log('DONE!');
 });
 ```
 
-## Options
+more examples you can see the example directory of source repository.
 
-- `hostname:`      _{String}_   hostname to connect. (Required)
+## ntlmAuth Options
+
 - `username:` _{String}_   Username. (Required)
 - `password:` _{String}_   Password. (Required)
 - `workstation:` _{String}_ Name of workstation or `''`.
 - `domain:`   _{String}_   Name of domain or `''`.
-
-You can also pass along all other options of [http](https://nodejs.org/api/http.html).
 
 ## More information
 
@@ -85,7 +57,7 @@ You can also pass along all other options of [http](https://nodejs.org/api/http.
 
 ## License (MIT)
 
-Copyright (c) Sam Decrock <https://github.com/SamDecrock/>
+Copyright (c) liuxiong <https://github.com/liuxiong332/>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
