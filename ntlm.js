@@ -58,9 +58,13 @@ var typeflags = {
 		+ flags.NTLM_Negotiate56
 };
 
-function createType1Message(options){
-	var domain = escape(options.domain.toUpperCase());
-	var workstation = escape(options.workstation.toUpperCase());
+function createType1Message(options) {
+	var domain = '', workstation = '';
+	if(options.domain != null)
+		domain = escape(options.domain.toUpperCase());
+	if(options.workstation != null)
+		workstation = escape(options.workstation.toUpperCase());
+
 	var protocol = 'NTLMSSP\0';
 
 	var BODY_LENGTH = 40;
@@ -103,7 +107,7 @@ function createType1Message(options){
 function parseType2Message(rawmsg, callback){
 	var match = rawmsg.match(/NTLM (.+)?/);
 	if(!match || !match[1])
-		return callback(new Error("Couldn't find NTLM in the message type2 comming from the server"));
+		return callback(new Error("Not NTLM Authentication"));
 
 	var buf = new Buffer(match[1], 'base64');
 
@@ -144,8 +148,11 @@ function createType3Message(msg2, options){
 
 	var BODY_LENGTH = 72;
 
-	var domainName = escape(options.domain.toUpperCase());
-	var workstation = escape(options.workstation.toUpperCase());
+	var domainName = '', workstation = '';
+	if(options.domain != null)
+		domainName = escape(options.domain.toUpperCase());
+	if(options.workstation != null)
+		workstation = escape(options.workstation.toUpperCase());
 
 	var workstationBytes, domainNameBytes, usernameBytes, encryptedRandomSessionKeyBytes;
 
