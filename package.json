@@ -1,8 +1,9 @@
 {
   "name": "http-ext-ntlm",
   "description": "http-ext-ntlm is a http-ext plugin to do NTLM authentication",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
+    "http-ext": "^0.2.12"
   },
   "author": {
     "name": "liuxiong",
