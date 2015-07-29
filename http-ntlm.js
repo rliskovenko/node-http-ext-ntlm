@@ -49,21 +49,21 @@ NtlmAuthFilter.prototype.filterResponse = function(res, next) {
       // client need send TYPE1 message
       resSocket.ntlmId = this.managerScope.count++;
       resSocket.ntlmStatus = NEED_TYPE1_AUTH;
-      throw new httpExt.RetryError;
+      next.retry();
     } else {
+      var type2Error = null;
       resSocket.ntlmInfo = ntlm.parseType2Message(authVal, function(err) {
-        resSocket.ntlmStatus = NEED_TYPE1_AUTH;
-        throw new httpExt.RetryError;
+        type2Error = err;
       });
+      resSocket.ntlmStatus = type2Error ? NEED_TYPE1_AUTH : NEED_TYPE3_AUTH;
       //client need send request again with TYPE2 message Authrization
-      resSocket.ntlmStatus = NEED_TYPE3_AUTH;
-      throw new httpExt.RetryError;
+      next.retry();
     }
   } else if(resSocket.ntlmStatus != NTLM_AUTH_OK) {
     // NTLM Auth success
     resSocket.ntlmStatus = NTLM_AUTH_OK;
+    next()
   }
-  next()
 };
 
 module.exports = NtlmAuthFilter
