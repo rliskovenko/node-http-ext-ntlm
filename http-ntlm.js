@@ -43,7 +43,7 @@ NtlmAuthFilter.prototype.setManagerScope = function(scope) {
 NtlmAuthFilter.prototype.filterResponse = function(res, next) {
   var resSocket = res.socket;
 
-  authVal = res.headers['www-authenticate'];
+  authVal = res.headers['www-authenticate'] || res.headers['proxy-authenticate'];
   if(res.statusCode === 401 && authVal != null && /\bNTLM\b/.test(authVal)) {
     if(resSocket.ntlmStatus == null) {
       // client need send TYPE1 message
